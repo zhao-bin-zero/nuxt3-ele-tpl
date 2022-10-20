@@ -1,6 +1,6 @@
 // ESLint 主要解决的是代码质量问题
-import { defineConfig } from 'eslint-define-config'
-export default defineConfig({
+const { defineConfig } = require('eslint-define-config')
+module.exports = defineConfig({
   root: true,
   env: {
     browser: true,
@@ -14,8 +14,9 @@ export default defineConfig({
     'plugin:nuxt/recommended'
   ],
   overrides: [],
-  parser: '@typescript-eslint/parser',
+  parser: 'vue-eslint-parser',
   parserOptions: {
+    parser: '@typescript-eslint/parser',
     ecmaVersion: 'latest',
     sourceType: 'module'
   },
