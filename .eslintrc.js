@@ -75,7 +75,7 @@ module.exports = defineConfig({
         math: 'always'
       }
     ],
-    // 'vue/multi-word-component-names': 0, //关闭vue文件和组件命名校验
+    'vue/multi-word-component-names': 0, //关闭vue文件和组件命名校验
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'warn'
   }

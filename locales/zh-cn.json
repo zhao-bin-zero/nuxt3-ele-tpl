@@ -1,0 +1,10 @@
+{
+  "title": "VDX 操作系统",
+  "datePicker": {
+    "start date": "Start Date",
+    "end date": "End Date",
+    "to": "To",
+    "past week": "Past Week | Past {n} Weeks",
+    "past month": "Past Month | Past {n} Months"
+  }
+}
