@@ -1,5 +1,4 @@
 import i18n from './common/i18n'
-console.log(process.env.NUXT_NODE_ENV, process.env.MODE, process.env.BASE_URL)
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   // Target: https://go.nuxtjs.dev/config-target
@@ -47,5 +46,7 @@ export default defineNuxtConfig({
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: ['~/assets/styles/index.scss'],
   // Auto import components: https://go.nuxtjs.dev/config-components
-  components: true
+  components: true,
+  // privateRuntimeConfig: {}
+  publicRuntimeConfig: require(`./env/${process.env.NUXT_NODE_ENV}`)
 })

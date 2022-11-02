@@ -65,7 +65,8 @@
   const switchLang = () => {
     $i18n.setLocale(currentLang.value)
   }
-  console.log(process.env.NODE_ENV)
+  // const config = useRuntimeConfig()
+  // console.log('123', config.BASE_URL)
   const value1 = ref('')
 </script>
 
