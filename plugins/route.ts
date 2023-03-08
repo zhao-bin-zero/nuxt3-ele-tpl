@@ -1,19 +1,20 @@
-// import Cookies from 'js-cookie'
+// import { NavigationGuardNext, RouteLocationNormalized } from '@intlify/vue-router-bridge'
 
 export default defineNuxtPlugin(() => {
-  //   const { beforeEach } = useRouter()
-  //   const lang = Cookies.get('lang')
-  //   beforeEach((to, from) => {
-  //     if (to.name) {
-  //       if (to?.params?.lang) {
-  //         Cookies.set('lang', to.params.lang as string)
-  //       } else if (lang) {
-  //         return navigateTo(`/${lang}/`)
-  //       } else {
-  //         return navigateTo(`/zh`)
-  //       }
+  // nuxtApp.$router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+  //   console.log(to, from)
+  //   const lang = useCookie('lang')
+  //   if (to.name) {
+  //     if (to?.params?.lang) {
+  //       lang.value = to.params.lang as string
+  //       next()
+  //     } else if (lang) {
+  //       return navigateTo(`/${lang}/`)
   //     } else {
   //       return navigateTo(`/zh`)
   //     }
-  //   })
+  //   } else {
+  //     return navigateTo(`/zh`)
+  //   }
+  // })
 })

@@ -1,14 +1,7 @@
-<!-- <template>
-  <nuxt></nuxt>
+<template>
+  <slot></slot>
 </template>
 
-<script>
-  import Vue from 'vue'
+<script setup></script>
 
-  export default Vue.extend({
-    // eslint-disable-next-line vue/multi-word-component-names
-    name: 'Default'
-  })
-</script>
-
-<style scoped></style> -->
+<style scoped></style>

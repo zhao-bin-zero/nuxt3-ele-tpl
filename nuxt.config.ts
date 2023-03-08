@@ -1,29 +1,30 @@
 import i18n from './common/i18n'
-// https://v3.nuxtjs.org/api/configuration/nuxt.config
+// https://nuxt.com/docs/api/configuration/nuxt-config#runtimeconfig
 export default defineNuxtConfig({
-  // Target: https://go.nuxtjs.dev/config-target
-  target: 'static',
-  // meta
-  meta: {
-    title: 'Element Plus + Nuxt 3',
-    loading: { color: '#3067d9' },
-    htmlAttrs: {
-      lang: 'en'
-    },
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      {
-        hid: 'description',
-        name: 'description',
-        content: 'ElementPlus + Nuxt3'
+  debug: true,
+  ssr: true,
+  app: {
+    head: {
+      title: 'Element Plus + Nuxt 3',
+      htmlAttrs: {
+        lang: 'en'
       },
-      { name: 'format-detection', content: 'telephone=no' }
-    ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'ElementPlus + Nuxt3'
+        },
+        { name: 'format-detection', content: 'telephone=no' }
+      ],
+      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    }
   },
   modules: [
-    '@nuxtjs/i18n' // 加载 i18n 模块
+    '@nuxtjs/i18n', // 加载 i18n 模块
+    '@pinia/nuxt'
   ],
   i18n: {
     locales: i18n.lacales,
@@ -43,10 +44,31 @@ export default defineNuxtConfig({
       fallbackLocale: i18n.defaultLocaleCode
     }
   },
-  // Global CSS: https://go.nuxtjs.dev/config-css
-  css: ['~/assets/styles/index.scss'],
-  // Auto import components: https://go.nuxtjs.dev/config-components
-  components: true,
-  // privateRuntimeConfig: {}
-  publicRuntimeConfig: require(`./env/${process.env.NUXT_NODE_ENV}`)
+  // alias: {
+  // '@': '.'
+  // },
+  css: ['@/assets/styles/index.scss'],
+  devServer: {
+    port: 3000
+  },
+  runtimeConfig: {
+    public: require(`./env/${process.env.NUXT_NODE_ENV || 'dev'}`)
+  },
+  nitro: {
+    // 不支持开发环境服务器请求 useRoute报错
+    // devProxy: {
+    //   '/api': {
+    //     target: 'https://api.nuxtjs.dev', //这里是接口地址
+    //     changeOrigin: true
+    //   }
+    // },
+    // prerender: {
+    //   crawlLinks: true,
+    //   routes: [],
+    //   ignore: []
+    // }
+  },
+  routeRules: {
+    '/api/**': { proxy: { to: 'https://api.nuxtjs.dev/**' } }
+  }
 })

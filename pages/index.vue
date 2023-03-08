@@ -47,7 +47,7 @@
     <br />
     <el-row>
       <el-button :icon="Search" circle />
-      <el-button type="primary" :icon="Edit" circle />
+      <el-button type="primary" :icon="Edit" circle @click="aa" />
       <el-button type="success" :icon="Check" circle />
       <el-button type="info" :icon="Message" circle />
       <el-button type="warning" :icon="Star" circle />
@@ -59,14 +59,22 @@
 <script lang="ts" setup>
   import { Check, Delete, Edit, Message, Search, Star } from '@element-plus/icons-vue'
   import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables'
+  // import { useUserStore } from '@/stores/user'
+  // definePageMeta({ middleware: 'auth' })
   const $i18n = useI18n()
+  console.log(31213)
   const allLang = $i18n.locales.value.map((lang) => (lang as LocaleObject).code)
   const currentLang = ref($i18n.locale.value)
   const switchLang = () => {
     $i18n.setLocale(currentLang.value)
   }
-  // const config = useRuntimeConfig()
-  // console.log('123', config.BASE_URL)
+  // const { logout } = useUserStore()
+
+  // logout()
+
+  const aa = () => {}
+  const config = useRuntimeConfig()
+  console.log('123', config, config.BASE_URL)
   const value1 = ref('')
 </script>
 
