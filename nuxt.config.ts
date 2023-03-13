@@ -1,7 +1,12 @@
 import i18n from './common/i18n'
+
+const isProduction = process.env.MODE === 'prod'
+
+// TODO 生产环境移除console
+
 // https://nuxt.com/docs/api/configuration/nuxt-config#runtimeconfig
 export default defineNuxtConfig({
-  debug: true,
+  debug: !isProduction,
   ssr: true,
   app: {
     head: {
@@ -24,7 +29,8 @@ export default defineNuxtConfig({
   },
   modules: [
     '@nuxtjs/i18n', // 加载 i18n 模块
-    '@pinia/nuxt'
+    '@pinia/nuxt',
+    '@vueuse/nuxt'
   ],
   i18n: {
     locales: i18n.lacales,
@@ -47,12 +53,18 @@ export default defineNuxtConfig({
   // alias: {
   // '@': '.'
   // },
-  css: ['@/assets/styles/index.scss'],
+  css: [`@/assets/styles/theme/${process.env.COLOR || 'index'}.scss`, '@/assets/styles/index.scss'],
   devServer: {
     port: 3000
   },
   runtimeConfig: {
-    public: require(`./env/${process.env.NUXT_NODE_ENV || 'dev'}`)
+    public: {
+      NUXT_NODE_ENV: process.env.NUXT_NODE_ENV,
+      MODE: process.env.MODE,
+      BASE_URL: process.env.BASE_URL,
+      // 样式换肤
+      COLOR: process.env.COLOR
+    }
   },
   nitro: {
     // 不支持开发环境服务器请求 useRoute报错
@@ -62,13 +74,23 @@ export default defineNuxtConfig({
     //     changeOrigin: true
     //   }
     // },
-    // prerender: {
-    //   crawlLinks: true,
-    //   routes: [],
-    //   ignore: []
-    // }
+    prerender: {
+      crawlLinks: true
+      // routes: [],
+      // ignore: i18n.getAllRoute('/case')
+    }
   },
   routeRules: {
     '/api/**': { proxy: { to: 'https://api.nuxtjs.dev/**' } }
   }
+  // components: [
+  //   {
+  //     path: '~/components'
+  //   }
+  // ],
+  // postcss: {
+  //   plugins: {
+  //     autoprefixer: true
+  //   }
+  // },
 })

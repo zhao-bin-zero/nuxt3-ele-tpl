@@ -11,6 +11,7 @@ export default defineNuxtRouteMiddleware(async () => {
       console.log('有token无用户信息')
       const { error } = await getUserInfo()
       if (error.value) {
+        // return abortNavigation()
         return jumpLink.toLogin()
       }
     }

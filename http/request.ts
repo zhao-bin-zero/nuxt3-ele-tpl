@@ -95,6 +95,7 @@ const fetch = <T>(url: UrlType, options: UseFetchOptions<ResponseDataType<T>>) =
     // 响应拦截
     onResponse({ response }) {
       // if (response.headers.get('content-disposition') && response.status === 200) return response
+      // TODO bug auth中间件初始化调用接口时onResponse获取不到useRoute
       console.log('onResponse')
       if (response.status === 200 && response._data.code === 9200) {
         // 成功返回

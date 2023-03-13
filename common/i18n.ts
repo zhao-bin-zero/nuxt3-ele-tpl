@@ -15,6 +15,15 @@ class i18n {
   get defaultLocaleCode() {
     return this.lacales[this.lacales.length - 1].code
   }
+  getAllRoute(...routes: string[]) {
+    const routes2 = [...routes]
+    routes.forEach((route) => {
+      this.lacales.forEach((lacale) => {
+        routes2.push(`/${lacale.code}${route}`)
+      })
+    })
+    return routes2
+  }
 }
 // 暴露i18n
 export default new i18n()

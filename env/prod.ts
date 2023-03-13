@@ -1,5 +1,0 @@
-module.exports = {
-  NUXT_NODE_ENV: 'production',
-  MODE: 'prod',
-  BASE_URL: 'http://10.0.10.99:8080/api'
-}

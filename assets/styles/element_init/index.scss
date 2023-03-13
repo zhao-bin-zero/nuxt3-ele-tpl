@@ -1,0 +1,15 @@
+// 改变element plus ui变量
+
+// 因为按需加载不能加载loading样式,所以只能先引入所有element css
+@import 'element-plus/dist/index.css';
+// 暗黑模式html.dark
+@import 'element-plus/theme-chalk/dark/css-vars.css';
+
+/* 改变主题色变量 覆盖ele继承theme色 */
+body {
+  --el-color-primary: var(--primary-color);
+  --el-color-success: var(--success-color);
+  --el-color-warning: var(--warn-color);
+  --el-color-danger: var(--error-color);
+  --el-color-info: var(--info-color);
+}

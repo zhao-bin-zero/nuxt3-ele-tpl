@@ -12,10 +12,8 @@
 // 去登陆
 export const jumpLink = {
   toLogin: async () => {
-    console.log('toLoginbefore', process.client)
     const route = useRoute()
     const loginPath = useLocalePath()('/login')
-    console.log('toLogin', process.client)
     if (loginPath !== route.path) {
       return await navigateTo({
         path: loginPath,
