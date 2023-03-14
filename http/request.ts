@@ -2,7 +2,6 @@ import type { FetchResponse } from 'ofetch'
 import type { Ref } from 'vue'
 import type { UseFetchOptions } from '#app'
 import { useUserStore } from '@/stores/user'
-import { ElMessage } from 'element-plus'
 
 // 后端返回的数据类型
 export interface ResponseDataType<T> {

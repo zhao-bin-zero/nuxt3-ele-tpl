@@ -30,8 +30,14 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/i18n', // 加载 i18n 模块
     '@pinia/nuxt',
-    '@vueuse/nuxt'
+    '@vueuse/nuxt',
+    '@element-plus/nuxt'
   ],
+  elementPlus: {
+    importStyle: 'css',
+    themes: ['dark'],
+    components: ['ElSubMenu']
+  },
   i18n: {
     locales: i18n.lacales,
     langDir: 'locales/', // 存放语言文件的地方

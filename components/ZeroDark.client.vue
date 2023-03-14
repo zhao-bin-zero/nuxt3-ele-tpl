@@ -1,4 +1,4 @@
-<!-- 切换亮暗模式 -->
+<!-- 切换亮暗模式 多种主题可使用@nuxtjs/color-mode -->
 <template>
   <use-dark v-slot="{ isDark, toggleDark }">
     <el-switch :model-value="isDark" size="large" @change="toggleDark" />
