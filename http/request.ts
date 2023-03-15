@@ -9,19 +9,6 @@ export interface ResponseDataType<T> {
   readonly message: string
   readonly data: T
 }
-// 本地分页使用
-export interface IPagesResult<T> {
-  page: number
-  prev: boolean
-  next: boolean
-  data: T[]
-}
-// 分页传递参数
-export interface IPage {
-  before?: string | number
-  after?: string | number
-  limit?: number
-}
 
 type UrlType = string | Request | Ref<string | Request> | (() => string | Request)
 type ParamsType = { [key: string]: any }
