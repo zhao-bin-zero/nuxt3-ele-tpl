@@ -1,64 +1,43 @@
 <!-- ele dialog -->
 <template>
   <el-dialog
-    custom-class="zero__dialog"
+    class="zero__dialog"
     v-model="visible"
     :show-close="showClose"
     :destroy-on-close="true"
-    :title="titles"
+    :title="title"
     :lock-scroll="true"
     :width="width"
     :close-on-click-modal="closeOnClickModal"
   >
-    <template #title>
-      <slot name="title"></slot>
+    <template #header>
+      <slot name="header"></slot>
     </template>
     <slot></slot>
+    <template #footer>
+      <slot name="footer"></slot>
+    </template>
   </el-dialog>
 </template>
 
-<script lang="ts">
-  import { defineComponent, ref, provide } from 'vue'
-  export interface DialogInstance {
-    open: () => {}
-    close: () => {}
-  }
-  export default defineComponent({
-    name: 'ZeroDialog',
-    props: {
-      titles: {
-        type: String
-      },
-      width: {
-        type: String,
-        default: '500px'
-      },
-      closeOnClickModal: {
-        type: Boolean,
-        default: true
-      },
-      showClose: {
-        type: Boolean,
-        default: true
-      }
-    },
-    setup() {
-      //弹框是否隐藏
-      const visible = ref(false)
-      const open = () => {
-        visible.value = true
-      }
-      const close = () => {
-        visible.value = false
-      }
-      provide('ZeroDialog', { close })
-      return {
-        visible,
-        open,
-        close
-      }
+<script lang="ts" setup>
+  const props = withDefaults(
+    defineProps<{
+      modelValue: boolean
+      title?: string
+      width?: string
+      closeOnClickModal?: boolean
+      showClose?: boolean
+    }>(),
+    {
+      width: '500px',
+      closeOnClickModal: true,
+      showClose: true
     }
-  })
+  )
+
+  // 弹框是否隐藏
+  const visible = useVModel(props, 'modelValue')
 </script>
 <style lang="scss">
   .zero__dialog {

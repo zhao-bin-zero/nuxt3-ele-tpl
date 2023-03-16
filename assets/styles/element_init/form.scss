@@ -1,1 +1,25 @@
 // form 样式
+.task-form {
+  .task-form__tip {
+    text-align: center;
+    font-size: 18px;
+    margin: 20px 0;
+  }
+  .task-form__title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .task-form__upload {
+  }
+  .task-form__error {
+    margin: 10px 50px 0;
+    color: var(--error-color);
+    line-height: 1.5;
+  }
+  .el-form-item__content {
+    .el-select {
+      width: 100%;
+    }
+  }
+}

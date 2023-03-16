@@ -1,65 +1,47 @@
 <template>
   <!-- destroy-on-close 控制是否在关闭 Drawer 之后将子元素全部销毁-->
-  <div class="zero__drawer">
-    <el-drawer v-model="visible" direction="rtl" :destroy-on-close="true" :lock-scroll="true" @close="closeDrawerFunc">
-      <template #title>
-        <el-breadcrumb separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item v-for="item in titles" :key="item">{{ item }}</el-breadcrumb-item>
-        </el-breadcrumb>
-      </template>
-      <slot></slot>
-    </el-drawer>
-  </div>
+  <el-drawer
+    v-model="visible"
+    custom-class="zero__drawer"
+    direction="rtl"
+    :destroy-on-close="true"
+    :lock-scroll="true"
+    @close="closeDrawerFunc"
+  >
+    <template #header>
+      <el-breadcrumb separator-class="el-icon-arrow-right" v-if="titles">
+        <el-breadcrumb-item v-for="item in titles" :key="item">{{ item }}</el-breadcrumb-item>
+      </el-breadcrumb>
+    </template>
+    <slot></slot>
+  </el-drawer>
 </template>
 
-<script lang="ts">
-  import { defineComponent, provide, ref } from 'vue'
-  export interface DrawerInstance {
-    open: () => {}
-    close: () => {}
-  }
-  export default defineComponent({
-    name: 'ZeroDrawer',
-    props: {
-      titles: {
-        type: Array,
-        default: () => []
-      },
-      size: {
-        type: String,
-        default: '900px'
-      }
-    },
-    emits: ['closeDrawerFunc'],
-    setup(props, { emit }) {
-      //弹框是否隐藏
-      const visible = ref(false)
-      const open = () => {
-        visible.value = true
-      }
-      const close = () => {
-        visible.value = false
-      }
-      provide('ZeroDialog', { close })
-      const closeDrawerFunc = () => {
-        emit('closeDrawerFunc')
-      }
-      return {
-        visible,
-        open,
-        close,
-        closeDrawerFunc
-      }
+<script lang="ts" setup>
+  const props = withDefaults(
+    defineProps<{
+      modelValue: boolean
+      titles?: string[]
+      size?: string
+    }>(),
+    {
+      size: '900px'
     }
-  })
+  )
+
+  const emit = defineEmits(['closeDrawerFunc'])
+  // 弹框是否隐藏
+  const visible = useVModel(props, 'modelValue')
+
+  const closeDrawerFunc = () => {
+    emit('closeDrawerFunc')
+  }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
   .zero__drawer {
-    :deep(.el-drawer) {
-      // width: 900px !important;
-      .el-drawer__body {
-        overflow: auto;
-      }
+    // width: 900px !important;
+    .el-drawer__body {
+      overflow: auto;
     }
   }
 </style>

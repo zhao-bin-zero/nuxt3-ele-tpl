@@ -1,3 +1,5 @@
+import { UploadFile } from 'element-plus'
+
 // 本地分页使用
 export interface IPagesResult<T> {
   page: number
@@ -50,8 +52,8 @@ export interface TaskFormFieldsDataType {
     fileLimit?: number
   }
   // 前端设置
-  changeInit?: (init: Function, params?: { [key: string]: any }) => void // 切换时执行初始化方法
-  textValue?: (params?: { [key: string]: any }) => string
+  changeInit?: (params?: ObjectType<any>) => void // 切换时执行初始化方法
+  textValue?: (params?: ObjectType<any>) => string
   list?: TaskFormFieldsDataType[]
 }
 
@@ -59,12 +61,6 @@ export interface ObjectType<T> {
   [key: string]: T
 }
 
-export type FileType = {
-  name: string
+export interface FileType extends UploadFile {
   id: string
-  url?: string
-  type?: string
-  size?: number
-  uid?: number
-  raw?: File
 }

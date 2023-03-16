@@ -2,6 +2,7 @@ import type { FetchResponse } from 'ofetch'
 import type { Ref } from 'vue'
 import type { UseFetchOptions } from '#app'
 import { useUserStore } from '@/stores/user'
+import { ObjectType } from '@/common/types'
 
 // 后端返回的数据类型
 export interface ResponseDataType<T> {
@@ -11,7 +12,7 @@ export interface ResponseDataType<T> {
 }
 
 type UrlType = string | Request | Ref<string | Request> | (() => string | Request)
-type ParamsType = { [key: string]: any }
+type ParamsType = ObjectType<any>
 
 export type HttpOptions<T> = UseFetchOptions<ResponseDataType<T>>
 

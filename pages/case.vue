@@ -57,6 +57,10 @@
       <!-- 暗夜模式切换 -->
       <zero-dark />
     </el-row>
+    <!-- <zero-form ref="form" :task-formfields="formfiles" /> -->
+    <zero-date-picker />
+    <zero-dialog v-model="visible" title="123"> 123 </zero-dialog>
+    <!-- <zero-drawer v-model="visible" :titles="['123']"> 123 </zero-drawer> -->
     <!-- {{ count }} -->
   </div>
 </template>
@@ -66,6 +70,9 @@
   import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables'
   // import { useUserStore } from '@/stores/user'
 
+  // definePageMeta({
+  //   layout: 'default'
+  // })
   // 登陆验证
   // definePageMeta({ middleware: 'auth' })
 
@@ -75,7 +82,45 @@
   const changeLink = (locale: string) => {
     navigateTo(useSwitchLocalePath()(locale))
   }
-  console.log(123)
+
+  const visible = ref(false)
+
+  // const form = ref()
+  // const formfiles = ref([
+  //   {
+  //     id: 'actionType2',
+  //     label: 'Transfer to2',
+  //     type: 'enum',
+  //     defaultValue: '',
+  //     constraints: {},
+  //     enumOptions: {
+  //       1: '1',
+  //       2: '2'
+  //     },
+  //     display: {
+  //       multiAnswer: false,
+  //       textArea: false,
+  //       hided: false,
+  //       disabled: false
+  //     }
+  //   },
+
+  //   {
+  //     id: 'actionType',
+  //     label: 'Transfer to',
+  //     type: 'string',
+  //     defaultValue: '',
+  //     constraints: {
+  //       required: true
+  //     },
+  //     display: {
+  //       multiAnswer: false,
+  //       textArea: false,
+  //       hided: false,
+  //       disabled: false
+  //     }
+  //   }
+  // ])
 
   // 使用倒计时
   // const { start, count } = useCountDown()
@@ -86,7 +131,9 @@
   // 使用接口
   // const { logout } = useUserStore()
   // logout()
-  const aa = () => {}
+  const aa = () => {
+    visible.value = true
+  }
   // const config = useRuntimeConfig()
   // console.log('123', process.env?.COLOR, config.COLOR)
   const value1 = ref('')
