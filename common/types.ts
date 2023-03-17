@@ -2,13 +2,14 @@ import { UploadFile } from 'element-plus'
 
 // 本地分页使用
 export interface IPagesResult<T> {
-  page: number
+  pageNum: number
   prev: boolean
   next: boolean
   data: T[]
 }
 // 分页传递参数
 export interface IPage {
+  pageNum?: number // 新增，与before和after互斥
   before?: string | number
   after?: string | number
   limit?: number

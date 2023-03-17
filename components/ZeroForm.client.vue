@@ -37,7 +37,7 @@
           </el-select>
           <el-upload
             v-if="task.type === 'upload'"
-            :ref="`taskFormUpload${task.id}`"
+            ref="`taskFormUpload${task.id}`"
             class="task-form__upload"
             :with-credentials="false"
             :headers="taskFormUploadHeaders"
@@ -137,7 +137,7 @@
 <script lang="ts" setup>
   import { FileType, ObjectType, TaskFormFieldsDataType } from '@/common/types'
   import { isArray, isString } from '@/common/is'
-  import { UploadFile, UploadFiles, UploadRawFile, UploadUserFile } from 'element-plus'
+  import { FormInstance, UploadFile, UploadFiles, UploadRawFile, UploadUserFile } from 'element-plus'
 
   const props = withDefaults(
     defineProps<{
@@ -153,7 +153,7 @@
   )
   const emit = defineEmits(['submitForm'])
 
-  const taskForm = ref()
+  const taskForm = ref<FormInstance>()
   const taskFormCon = ref<ObjectType<any>>({})
   const taskFormRules = ref<ObjectType<ObjectType<any>[]>>({})
 
@@ -187,7 +187,6 @@
       (a: TaskFormFieldsDataType, b: TaskFormFieldsDataType) => a.display.order! - b.display.order!
     )
   })
-
   const taskFormInit = () => {
     visibleInit()
     // console.log('this.formfields', this.formfields)

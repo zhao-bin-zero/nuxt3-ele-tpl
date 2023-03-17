@@ -48,26 +48,30 @@
     </div>
     <br />
     <el-row>
-      <el-button :icon="Search" circle />
-      <el-button type="primary" :icon="Edit" circle @click="aa" />
-      <el-button type="success" :icon="Check" circle />
-      <el-button type="info" :icon="Message" circle />
-      <el-button type="warning" :icon="Star" circle />
-      <el-button type="danger" :icon="Delete" circle />
+      <el-button icon="Search" circle />
+      <el-button type="primary" icon="Edit" circle @click="aa" />
+      <el-button type="success" icon="Check" circle />
+      <el-button type="info" icon="Message" circle />
+      <el-button type="warning" icon="Star" circle />
+      <el-button type="danger" icon="Delete" circle />
       <!-- 暗夜模式切换 -->
       <zero-dark />
     </el-row>
+    <!-- <zero-login-check /> -->
     <!-- <zero-form ref="form" :task-formfields="formfiles" /> -->
     <zero-date-picker />
-    <zero-dialog v-model="visible" title="123"> 123 </zero-dialog>
+    <!-- <zero-dialog v-model="visible" title="123"> 123 </zero-dialog> -->
     <!-- <zero-drawer v-model="visible" :titles="['123']"> 123 </zero-drawer> -->
     <!-- {{ count }} -->
+    <!-- <zero-pagination :total="abs.total" :current-page="abs.currentPage" /> -->
+    <!-- <zero-vdx-table :table-result="tableResult" /> -->
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { Check, Delete, Edit, Message, Search, Star } from '@element-plus/icons-vue'
   import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables'
+  // import { IPage } from '@/common/types'
+  // import { getUserInfoApi } from '@/http/apis/user'
   // import { useUserStore } from '@/stores/user'
 
   // definePageMeta({
@@ -82,8 +86,18 @@
   const changeLink = (locale: string) => {
     navigateTo(useSwitchLocalePath()(locale))
   }
-
+  // const abs = ref({
+  //   total: 100,
+  //   currentPage: 1
+  // })
   const visible = ref(false)
+
+  // const { tableResult, tableSearchSubmit } = useVdxTable()
+  // const getLogsList = (direction: number) => {
+  //   tableSearchSubmit(direction, 'id', (pageParams: IPage) => {
+  //     return getUserInfoApi()
+  //   })
+  // }
 
   // const form = ref()
   // const formfiles = ref([

@@ -4,6 +4,8 @@
 // import * as user from '@/http/apis/user'
 // import * as common from '@/http/apis/common'
 
+import { FormInstance } from 'element-plus'
+
 // export const constants = constantsAll
 // export const utils = utilsAll
 // export const is = isAll
@@ -30,4 +32,9 @@ export const jumpLink = {
     const route = useRoute()
     await navigateTo((route.query.callbackUrl as string) || useLocalePath()('/'))
   }
+}
+
+export const resetForm = (formRef: FormInstance, callback?: () => void) => {
+  formRef?.resetFields()
+  callback && callback()
 }
