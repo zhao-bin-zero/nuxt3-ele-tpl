@@ -10,6 +10,11 @@ module.exports = {
     // 'scope-empty': [2, 'never'],
     'subject-empty': [2, 'never'],
     'subject-full-stop': [2, 'never'],
+    // 'subject-case': [
+    //   2,
+    //   'always',
+    //   ['lower-case', 'upper-case', 'camel-case', 'kebab-case', 'pascal-case', 'sentence-case', 'snake-case', 'start-case']
+    // ],
     'header-max-length': [2, 'always', 100]
   }
 }

@@ -1,9 +1,11 @@
 <template>
-  <NuxtLayout>
-    <el-config-provider :locale="i18n.elementLocale[locale]">
-      <NuxtPage :class="locale" />
-    </el-config-provider>
-  </NuxtLayout>
+  <div :class="locale">
+    <NuxtLayout>
+      <el-config-provider :locale="i18n.elementLocale[locale]">
+        <NuxtPage />
+      </el-config-provider>
+    </NuxtLayout>
+  </div>
 </template>
 
 <script setup>

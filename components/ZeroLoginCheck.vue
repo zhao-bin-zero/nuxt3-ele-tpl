@@ -1,14 +1,14 @@
 <!-- 登录校验 适用于登录前与登录后样式一致的情况-->
 <template>
   <div class="inline-block login__check">
-    <div class="login__check-go cursor-pointer" v-if="!isLogin" @click.stop="jumpLink.toLogin"> </div>
+    <div class="login__check-go cursor-pointer" v-if="!userStore.isLogin" @click.stop="jumpLink.toLogin"> </div>
     <slot></slot>
   </div>
 </template>
 
 <script lang="ts" setup>
   import { useUserStore } from '@/stores/user'
-  const { isLogin } = useUserStore()
+  const userStore = useUserStore()
 </script>
 <style lang="scss" scoped>
   .login__check {

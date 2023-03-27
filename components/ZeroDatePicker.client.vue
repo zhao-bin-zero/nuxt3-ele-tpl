@@ -29,7 +29,7 @@
       valueFormat: 'x'
     }
   )
-  const emit = defineEmits(['update:startTime', 'update:endTime', 'change'])
+  const emits = defineEmits(['update:startTime', 'update:endTime', 'change'])
   const isValueFormat = computed(() => {
     return props.valueFormat === '' || props.valueFormat === 'x'
   })
@@ -61,9 +61,9 @@
       }
     }
     // console.log(1, startTime, endTime)
-    emit('update:startTime', startTime)
-    emit('update:endTime', endTime)
-    emit('change')
+    emits('update:startTime', startTime)
+    emits('update:endTime', endTime)
+    emits('change')
   }
 </script>
 <style lang="scss" scoped></style>

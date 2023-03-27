@@ -73,21 +73,22 @@ export default defineNuxtConfig({
     }
   },
   nitro: {
-    // 不支持开发环境服务器请求 useRoute报错
-    // devProxy: {
-    //   '/api': {
-    //     target: 'https://api.nuxtjs.dev', //这里是接口地址
-    //     changeOrigin: true
-    //   }
-    // },
+    // 该配置用于客户端请求转发
+    devProxy: {
+      '/api': {
+        target: 'http://172.31.139.192:9456', //这里是接口地址
+        changeOrigin: true
+      }
+    },
+    // 该配置用于服务端请求转发
+    routeRules: {
+      '/api/**': { proxy: { to: 'http://172.31.139.192:9456/**' } }
+    },
     prerender: {
       crawlLinks: true
       // routes: [],
       // ignore: i18n.getAllRoute('/case')
     }
-  },
-  routeRules: {
-    '/api/**': { proxy: { to: 'https://api.nuxtjs.dev/**' } }
   }
   // components: [
   //   {

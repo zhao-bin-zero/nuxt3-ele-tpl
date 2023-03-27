@@ -14,7 +14,7 @@ export interface LoginParamsType {
   password: string
 }
 export interface LoginDataType {
-  id: string
+  accessToken: string
 }
 export const loginApi = async (params: LoginParamsType) => {
   return await useHttp.post<LoginDataType>(Api.login, params)

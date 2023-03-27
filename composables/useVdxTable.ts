@@ -2,6 +2,9 @@ import { DIRECTION, VDX } from '@/common/constants'
 import { IPage, IPagesResult } from '@/common/types'
 import { FormInstance } from 'element-plus'
 
+type callbackFunType = (pageParams: IPage) => Promise<any>
+type idKeyType = string | number
+
 // table查询分页
 export const useVdxTable = () => {
   const tableFormRef = ref<FormInstance>()
@@ -14,7 +17,7 @@ export const useVdxTable = () => {
   })
 
   const tableLoading = ref(false)
-  const listGetCalculate = async (direction: number, idKey: string | number, callback: (pageParams: IPage) => Promise<any>) => {
+  const listGetCalculate = async (direction: number, idKey: idKeyType, callback: callbackFunType) => {
     if (tableLoading.value) return
     tableLoading.value = true
     if (direction === DIRECTION.NONE) {
@@ -53,8 +56,8 @@ export const useVdxTable = () => {
 
   const tableSearchSubmit = (
     direction = DIRECTION.NONE,
-    idKey: string | number, // ===0 属于新分页
-    callback: (pageParams: IPage) => Promise<any>
+    idKey: idKeyType, // ===0 属于新分页
+    callback: callbackFunType
   ) => {
     console.log(direction, 'direction')
     if (tableFormRef.value) {

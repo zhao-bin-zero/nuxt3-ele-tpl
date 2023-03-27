@@ -2,9 +2,9 @@ import { useUserStore } from '@/stores/user'
 
 export default defineNuxtRouteMiddleware(async () => {
   // console.log('defineNuxtRouteMiddleware')
-  const token = useCookie('token')
-  // console.log('token.value', token.value, to.fullPath, from.fullPath, process.client)
-  if (token.value) {
+  const { token } = useUserStore()
+  // console.log('token.value', token, to.fullPath, from.fullPath, process.client)
+  if (token) {
     const { isLogin, getUserInfo } = useUserStore()
     if (isLogin) {
     } else {

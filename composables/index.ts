@@ -38,3 +38,9 @@ export const resetForm = (formRef: FormInstance, callback?: () => void) => {
   formRef?.resetFields()
   callback && callback()
 }
+
+export const EnumToArray = (enumme: any): { label: string; value: number }[] => {
+  return Object.keys(enumme)
+    .filter((value: string | number) => !isNaN(Number(value)))
+    .map((key) => ({ label: enumme[key].toString(), value: +key }))
+}

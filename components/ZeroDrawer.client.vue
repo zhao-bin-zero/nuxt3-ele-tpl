@@ -29,12 +29,12 @@
     }
   )
 
-  const emit = defineEmits(['closeDrawerFunc'])
+  const emits = defineEmits(['closeDrawerFunc'])
   // 弹框是否隐藏
   const visible = useVModel(props, 'modelValue')
 
   const closeDrawerFunc = () => {
-    emit('closeDrawerFunc')
+    emits('closeDrawerFunc')
   }
 </script>
 <style lang="scss">

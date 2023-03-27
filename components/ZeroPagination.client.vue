@@ -26,18 +26,18 @@
       currentPage: 1
     }
   )
-  const emit = defineEmits(['update:pageSize', 'getList'])
+  const emits = defineEmits(['update:pageSize', 'getList'])
 
   //分页
   const pageSizesArr = [20, 40, 50, 80, 100]
   const handleSizeChange = (val: number) => {
     console.log(val)
-    emit('update:pageSize', val)
-    emit('getList', 1)
+    emits('update:pageSize', val)
+    emits('getList', 1)
   }
   const handleCurrentChange = (val: number) => {
     console.log(val)
-    emit('getList', val)
+    emits('getList', val)
   }
 </script>
 <style lang="scss">

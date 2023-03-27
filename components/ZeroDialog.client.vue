@@ -15,7 +15,12 @@
     </template>
     <slot></slot>
     <template #footer>
-      <slot name="footer"></slot>
+      <slot name="footer">
+        <div class="justify-flex-end">
+          <el-button @click="visible = false">Back</el-button>
+          <el-button type="primary" @click="emits('submitForm')">Submit</el-button>
+        </div>
+      </slot>
     </template>
   </el-dialog>
 </template>
@@ -35,15 +40,16 @@
       showClose: true
     }
   )
-
+  const emits = defineEmits(['submitForm', 'update:modelValue'])
   // 弹框是否隐藏
   const visible = useVModel(props, 'modelValue')
 </script>
 <style lang="scss">
   .zero__dialog {
     .el-dialog__header {
-      // border-bottom: 1px solid #eee;
-      padding: 17px 20px 10px;
+      border-bottom: 1px solid #eee;
+      margin-right: 0;
+      padding: 17px 36px 10px 20px;
       .el-dialog__title {
         font-size: 20px;
         font-weight: 600;

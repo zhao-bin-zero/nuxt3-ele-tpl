@@ -6,7 +6,8 @@
 // @import 'element-plus/theme-chalk/dark/css-vars.css';
 
 /* 改变主题色变量 覆盖ele继承theme色 */
-body {
+html:root,
+html:root.dark {
   --el-color-primary: var(--primary-color);
   --el-color-success: var(--success-color);
   --el-color-warning: var(--warn-color);

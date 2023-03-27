@@ -42,4 +42,5 @@ module.exports = {
   skipQuestions: ['body', 'footer'],
   // limit subject length, commitlint默认是72
   subjectLimit: 100
+  // upperCaseSubject: true
 }

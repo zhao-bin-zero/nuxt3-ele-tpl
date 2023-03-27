@@ -20,7 +20,7 @@ export interface TaskFormFieldsDataType {
   label: string
   type: string
   defaultValue?: string | number
-  constraints: {
+  constraints?: {
     readonly?: boolean // 为ture表示后端不解析
     required?: boolean
     minlength?: number
@@ -28,14 +28,14 @@ export interface TaskFormFieldsDataType {
     max?: number
     min?: number
   }
-  display: {
+  display?: {
     align?: string
-    disabled: boolean // 代表只读且后端解析
+    disabled?: boolean // 代表只读且后端解析
     hided?: boolean
-    multiAnswer: boolean
+    multiAnswer?: boolean
     order?: number
     reminder?: string
-    textArea: boolean
+    textArea?: boolean
     richText?: boolean
     placeholder?: string
     regex?: string

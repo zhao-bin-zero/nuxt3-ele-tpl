@@ -7,6 +7,51 @@
       // color: #fff;
     }
   }
+  &.link-color {
+    &,
+    &:hover,
+    &:focus,
+    &:active {
+      color: var(--link-color);
+    }
+    span {
+      border-bottom-color: var(--link-color);
+    }
+  }
+  &.link-primary-color {
+    &,
+    &:hover,
+    &:focus,
+    &:active {
+      color: var(--primary-color);
+    }
+    span {
+      border-bottom-color: var(--primary-color);
+    }
+  }
+
+  &.btn-primary {
+    &,
+    &:hover,
+    &:focus,
+    &:active {
+      color: #fff;
+      border-color: var(--primary-color);
+      background-color: var(--primary-color);
+    }
+    &.is-disabled {
+      &,
+      &:hover,
+      &:focus,
+      &:active {
+        color: #fff;
+        border-color: var(--primary-color);
+        background-color: var(--primary-color);
+        // opacity: 0.5;
+        // filter: alpha(opacity=50);
+      }
+    }
+  }
 }
 // button大小
 //超大型
@@ -75,51 +120,6 @@
 // 颜色
 // <el-button class="btn btn-primary"> 登录 </el-button>
 // <el-button class="btn btn-primary-hollow"> <i class="el-icon-top"></i>登录 </el-button>
-// <el-button type="text" class="btn link-primary-color"><i class="el-icon-top"></i> 登录 </el-button>
+// <el-button link class="btn link-primary-color"><i class="el-icon-top"></i> 登录 </el-button>
 // <el-button class="btn btn-info-disabled" disabled> 登录 </el-button>
 // <el-button class="btn btn-default-hollow"> 登录 </el-button>
-.link-color {
-  &,
-  &:hover,
-  &:focus,
-  &:active {
-    color: var(--link-color);
-  }
-  span {
-    border-bottom-color: var(--link-color);
-  }
-}
-.link-primary-color {
-  &,
-  &:hover,
-  &:focus,
-  &:active {
-    color: var(--primary-color);
-  }
-  span {
-    border-bottom-color: var(--primary-color);
-  }
-}
-
-.btn-primary {
-  &,
-  &:hover,
-  &:focus,
-  &:active {
-    color: #fff;
-    border-color: var(--primary-color);
-    background-color: var(--primary-color);
-  }
-  &.is-disabled {
-    &,
-    &:hover,
-    &:focus,
-    &:active {
-      color: #fff;
-      border-color: var(--primary-color);
-      background-color: var(--primary-color);
-      // opacity: 0.5;
-      // filter: alpha(opacity=50);
-    }
-  }
-}

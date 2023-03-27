@@ -24,13 +24,8 @@ const handleError = <T>(response: FetchResponse<ResponseDataType<T>> & FetchResp
         message: response?._data?.message ?? text ?? '未知错误！'
       })
   }
-  const logout = () => {
-    // 跳转实际登录页
-    const { clearUserInfo } = useUserStore()
-    clearUserInfo()
-    // 可以考虑把auth中间件的接口屏蔽掉
-    jumpLink.toLogin()
-  }
+
+  const { logout } = useUserStore()
 
   if (!response._data) {
     err('请求超时，服务器无响应！')
@@ -51,7 +46,7 @@ const handleError = <T>(response: FetchResponse<ResponseDataType<T>> & FetchResp
       403: () => err('没有权限访问该资源'),
       401: () => {
         err('登录状态已过期，需要重新登录')
-        logout()
+        logout(true)
       }
     }
     handleMap[response.status] ? handleMap[response.status]() : err()
@@ -77,7 +72,11 @@ const fetch = <T>(url: UrlType, options: UseFetchOptions<ResponseDataType<T>>) =
       options.baseURL = BASE_URL
 
       options.headers = new Headers(options.headers)
-      options.headers.set('Authorization', `Bearer ${useCookie('token').value}`)
+      const { token } = useUserStore()
+      if (token) {
+        options.headers.set('VDX-TOKEN', token)
+        // options.headers.set('Authorization', `Bearer ${token.value}`)
+      }
     },
     // 响应拦截
     onResponse({ response }) {

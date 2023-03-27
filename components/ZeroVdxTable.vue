@@ -4,7 +4,7 @@
       <slot name="header">
         <!--    todo: 表格工具栏    -->
         <div class="table-tool">
-          <el-button title="refresh" icon="Refresh" @click="emit('getList', DIRECTION.NONE)" />
+          <el-button title="refresh" icon="Refresh" @click="emits('getList', DIRECTION.NONE)" />
           <el-button icon="Apple" />
           <el-button icon="Setting" />
           <el-button
@@ -28,13 +28,19 @@
       <slot name="footer"></slot>
     </div>
     <div class="zero-pagination justify-flex-end">
-      <el-button plain icon="ArrowLeft" :disabled="!tableResult.prev" class="btn-prev" @click="emit('getList', DIRECTION.PREV)" />
+      <el-button
+        plain
+        icon="ArrowLeft"
+        :disabled="!tableResult.prev"
+        class="btn-prev"
+        @click="emits('getList', DIRECTION.PREV)"
+      />
       <el-button
         plain
         icon="ArrowRight"
         :disabled="!tableResult.next"
         class="btn-next"
-        @click="emit('getList', DIRECTION.NEXT)"
+        @click="emits('getList', DIRECTION.NEXT)"
       />
     </div>
   </div>
@@ -57,7 +63,7 @@
       showTableHeader: true
     }
   )
-  const emit = defineEmits(['getList'])
+  const emits = defineEmits(['getList'])
 
   const tableRef = ref<TableInstance>()
   const tableParentRef = ref()

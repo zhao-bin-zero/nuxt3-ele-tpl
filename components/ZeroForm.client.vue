@@ -11,10 +11,15 @@
       :label-width="labelWidth"
     >
       <template v-for="task in formfieldsHtml">
-        <div v-if="task.type === 'title'" :key="task.id" class="task-form__title" :class="`text-${task.display.align}`">
+        <div
+          v-if="task.type === 'title'"
+          :key="task.id"
+          class="task-form__title"
+          :class="`text-${task.display?.align || 'left'}`"
+        >
           {{ taskFormCon[task.id] || (task.textValue ? task.textValue(taskFormCon) : '') }}
         </div>
-        <el-form-item v-else v-show="!task.display.hided" :key="task.id + '0'" :label="task.label + ':'" :prop="task.id">
+        <el-form-item v-else v-show="!task.display?.hided" :key="task.id + '0'" :label="task.label + ':'" :prop="task.id">
           <p v-if="task.type === 'text'">
             {{ taskFormCon[task.id] || (task.textValue ? task.textValue(taskFormCon) : '--') }}
           </p>
@@ -23,9 +28,9 @@
             v-model="taskFormCon[task.id]"
             clearable
             filterable
-            :multiple="task.display.multiAnswer"
-            :disabled="task.display.disabled"
-            :placeholder="task.display.placeholder || 'Please select'"
+            :multiple="task.display?.multiAnswer"
+            :disabled="task.display?.disabled"
+            :placeholder="task.display?.placeholder || 'Please select'"
             @change="task.changeInit && task.changeInit(taskFormCon)"
           >
             <el-option
@@ -42,7 +47,7 @@
             :with-credentials="false"
             :headers="taskFormUploadHeaders"
             :file-list="taskFormCon[task.id]"
-            :action="`${$config.baseURL}/workflow/file`"
+            :action="`${useRuntimeConfig().baseURL}/workflow/file`"
             :before-remove="beforeRemove"
             :on-remove="
               (file, fileList) => {
@@ -73,24 +78,25 @@
             :data="{ fileType: task?.file?.fileType }"
             :accept="task?.file?.contentType"
             :list-type="(task?.file?.contentType || '').includes('image') ? 'picture' : 'text'"
-            :multiple="task.display.multiAnswer"
-            :disabled="task.display.disabled"
+            :multiple="task.display?.multiAnswer"
+            :disabled="task.display?.disabled"
             :limit="task?.file?.fileLimit"
           >
-            <el-button v-if="!task.display.disabled" type="primary">Choose</el-button>
+            <el-button v-if="!task.display?.disabled" type="primary">Choose</el-button>
             <!-- <div slot="tip" class="el-upload__tip">只能上传{{ task.file.type }}文件</div> -->
           </el-upload>
           <template v-if="task.type === 'string'">
-            <!-- <vdx-tinymce-editor v-if="task.display.richText" v-model="taskFormCon[task.id]" :disabled="task.display.disabled" /> -->
+            <!-- <bms-tinymce-editor v-if="task.display.richText" v-model="taskFormCon[task.id]" :disabled="task.display.disabled" /> -->
             <el-input
               v-model="taskFormCon[task.id]"
-              :type="task.display.textArea ? 'textarea' : 'text'"
+              :type="task.display?.textArea ? 'textarea' : 'text'"
               :rows="2"
-              :max="task.constraints.max"
-              :min="task.constraints.min"
-              :disabled="task.display.disabled"
-              :placeholder="task.display.placeholder || 'Please input'"
-              :show-word-limit="task.display.textArea"
+              :max="task.constraints?.max"
+              :min="task.constraints?.min"
+              :maxlength="task.constraints?.maxlength"
+              :disabled="task.display?.disabled"
+              :placeholder="task.display?.placeholder || 'Please input'"
+              :show-word-limit="task.display?.textArea"
             />
           </template>
           <!-- value-format除了x外无法设置默认值 -->
@@ -99,32 +105,33 @@
             v-model="taskFormCon[task.id]"
             type="datetime"
             value-format="x"
-            :disabled="task.display.disabled"
-            :placeholder="task.display.placeholder || 'Please select date'"
+            :disabled="task.display?.disabled"
+            :placeholder="task.display?.placeholder || 'Please select date'"
           />
-          <el-switch v-if="task.type === 'boolean'" v-model="taskFormCon[task.id]" :disabled="task.display.disabled" />
+          <el-switch v-if="task.type === 'boolean'" v-model="taskFormCon[task.id]" :disabled="task.display?.disabled" />
           <!-- 目前只有输入框 -->
           <template v-if="task.type === 'tab' && task.list">
-            <el-tabs v-model="task.defaultValue" class="vdx-tabs" type="card">
+            <el-tabs v-model="task.defaultValue" class="bms-tabs" type="card">
               <el-tab-pane v-for="t in task.list" :key="t.id" :label="t.label" :name="t.id">
                 <el-form-item :prop="t.id">
-                  <!-- <vdx-tinymce-editor v-if="t.display.richText" v-model="taskFormCon[t.id]" :disabled="t.display.disabled" /> -->
+                  <!-- <bms-tinymce-editor v-if="t.display?.richText" v-model="taskFormCon[t.id]" :disabled="t.display?.disabled" /> -->
                   <el-input
                     v-model="taskFormCon[t.id]"
-                    :type="t.display.textArea ? 'textarea' : 'text'"
+                    :type="t.display?.textArea ? 'textarea' : 'text'"
                     :rows="4"
-                    :max="t.constraints.max"
-                    :min="t.constraints.min"
-                    :disabled="t.display.disabled"
-                    :placeholder="t.display.placeholder || 'Please input'"
-                    :show-word-limit="t.display.textArea"
+                    :max="t.constraints?.max"
+                    :min="t.constraints?.min"
+                    :maxlength="task.constraints?.maxlength"
+                    :disabled="t.display?.disabled"
+                    :placeholder="t.display?.placeholder || 'Please input'"
+                    :show-word-limit="t.display?.textArea"
                   />
-                  <p v-if="t.display.reminder" class="el-form-item__notification">{{ t.display.reminder }}</p>
+                  <p v-if="t.display?.reminder" class="el-form-item__notification">{{ t.display.reminder }}</p>
                 </el-form-item>
               </el-tab-pane>
             </el-tabs>
           </template>
-          <p v-if="task.display.reminder" class="el-form-item__notification">{{ task.display.reminder }}</p>
+          <p v-if="task.display?.reminder" class="el-form-item__notification">{{ task.display.reminder }}</p>
         </el-form-item>
       </template>
     </el-form>
@@ -148,10 +155,11 @@
     }>(),
     {
       taskFormfields: () => [],
-      taskFormParams: () => ({})
+      taskFormParams: () => ({}),
+      labelWidth: '180px'
     }
   )
-  const emit = defineEmits(['submitForm'])
+  const emits = defineEmits(['submitForm'])
 
   const taskForm = ref<FormInstance>()
   const taskFormCon = ref<ObjectType<any>>({})
@@ -165,8 +173,8 @@
   const formfieldsHtml = computed(() => {
     const formfields = {} as ObjectType<TaskFormFieldsDataType>
     props.taskFormfields.forEach((field) => {
-      if (field.display.tab) {
-        if (formfields[field.display.tab]) {
+      if (field.display?.tab) {
+        if (formfields[field.display?.tab]) {
           formfields[field.display.tab].list!.push(field)
         } else {
           formfields[field.display.tab] = {
@@ -184,7 +192,7 @@
       }
     })
     return Object.values(formfields).sort(
-      (a: TaskFormFieldsDataType, b: TaskFormFieldsDataType) => a.display.order! - b.display.order!
+      (a: TaskFormFieldsDataType, b: TaskFormFieldsDataType) => a.display?.order || 0 - (b.display?.order || 0)
     )
   })
   const taskFormInit = () => {
@@ -193,7 +201,7 @@
     props.taskFormfields.forEach((field) => {
       let val = field.defaultValue || props.taskFormParams[field.id]
       if (val) {
-        if (field.display.multiAnswer || field.type === 'upload') {
+        if (field.display?.multiAnswer || field.type === 'upload') {
           if (isString(val)) {
             val = val.split(',')
             if (field.type === 'upload') {
@@ -202,7 +210,7 @@
           }
         }
       } else {
-        if (field.display.multiAnswer || field.type === 'upload') {
+        if (field.display?.multiAnswer || field.type === 'upload') {
           val = []
         } else if (field.type === 'boolean') {
           val = false
@@ -212,7 +220,7 @@
       taskFormCon.value[field.id] = val
       taskFormRules.value[field.id] = []
       // 必填校验
-      if (field.constraints.required) {
+      if (field.constraints?.required) {
         taskFormRules.value[field.id].push({
           required: true,
           message: `${field.label} is required.`,
@@ -220,20 +228,20 @@
         })
       }
       // 长度校验
-      const maxLength = field.constraints.maxlength || field.file?.fileLimit
-      if (maxLength || field.constraints.minlength) {
+      const maxLength = field.constraints?.maxlength || field.file?.fileLimit
+      if (maxLength || field.constraints?.minlength) {
         taskFormRules.value[field.id].push({
           type: isArray(val) ? 'array' : 'string',
-          min: field.constraints.minlength,
+          min: field.constraints?.minlength,
           max: maxLength,
-          message: `The length is between ${field.constraints.minlength || 1} and ${maxLength || 'n'} ${
+          message: `The length is between ${field.constraints?.minlength || 1} and ${maxLength || 'n'} ${
             isArray(val) ? '' : 'characters'
           }.`,
           trigger: 'change'
         })
       }
       // 正则校验
-      if (field.display.regex) {
+      if (field.display?.regex) {
         taskFormRules.value[field.id].push({
           pattern: field.display.regex,
           message: field.display.errorTip,
@@ -260,17 +268,17 @@
     const params = cloned.value
     const variables = {} as ObjectType<any>
     props.taskFormfields.forEach((field) => {
-      if (field.constraints.readonly) return
+      if (field.constraints?.readonly) return
       // if (!params[field.id]) return
       let value = params[field.id]
       if (field.type === 'upload') {
         value = value.map((obj: FileType) => obj.id)
       }
-      if (field.display.multiAnswer || field.type === 'upload') {
+      if (field.display?.multiAnswer || field.type === 'upload') {
         value = value.join()
       }
-      if (field.display.frontTab) {
-        if (!variables[field.display.frontTab]) {
+      if (field.display?.frontTab) {
+        if (!variables[field.display?.frontTab]) {
           variables[field.display.frontTab] = {}
         }
         variables[field.display.frontTab][field.id] = value
@@ -279,7 +287,7 @@
       }
     })
     console.log(variables)
-    emit('submitForm', variables)
+    emits('submitForm', variables)
   }
   const checkSubmit = () => {
     taskForm.value?.validate((valid: boolean) => {
