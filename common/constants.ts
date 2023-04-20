@@ -8,3 +8,5 @@ export enum DIRECTION {
 export const VDX = {
   pageSize: 10
 }
+
+export const DATEFORMAT = 'YYYY-MM-DD hh:mm:ss'

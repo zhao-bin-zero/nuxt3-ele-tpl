@@ -4,8 +4,8 @@
     v-model="times"
     :type="type"
     unlink-panels
-    start-placeholder="开始时间"
-    end-placeholder="结束时间"
+    start-placeholder="Start Time"
+    end-placeholder="End Time"
     :value-format="isValueFormat ? valueFormat : ''"
     :format="format"
     @change="changeTime"
@@ -39,6 +39,11 @@
   watch(
     () => [props.startTime, props.endTime],
     (n, o = []) => {
+      if (!n[0] && n[1]) {
+        // 用于form reset
+        emits('update:endTime', undefined)
+        return
+      }
       if (n[0] !== o[0] || n[1] !== o[1]) {
         times.value = n as timesType
       }

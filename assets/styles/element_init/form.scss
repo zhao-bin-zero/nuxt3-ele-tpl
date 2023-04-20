@@ -21,5 +21,11 @@
     .el-select {
       width: 100%;
     }
+    .el-form-item__notification {
+      min-width: 100%;
+      font-size: 14px;
+      line-height: 18px;
+      color: #747474;
+    }
   }
 }

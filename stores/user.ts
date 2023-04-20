@@ -31,7 +31,7 @@ const storeSetup = () => {
       // await logoutApi()
     }
     clearUserInfo()
-    jumpLink.toLogin()
+    jumpLink.toLogin(passive)
   }
 
   return { userInfo, logout, isLogin, clearUserInfo, setUserInfo, getUserInfo, token, setToken }

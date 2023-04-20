@@ -19,7 +19,7 @@
         >
           {{ taskFormCon[task.id] || (task.textValue ? task.textValue(taskFormCon) : '') }}
         </div>
-        <el-form-item v-else v-show="!task.display?.hided" :key="task.id + '0'" :label="task.label + ':'" :prop="task.id">
+        <el-form-item v-else-if="!task.display?.hided" :key="task.id + '0'" :label="task.label + ':'" :prop="task.id">
           <p v-if="task.type === 'text'">
             {{ taskFormCon[task.id] || (task.textValue ? task.textValue(taskFormCon) : '--') }}
           </p>
@@ -31,13 +31,13 @@
             :multiple="task.display?.multiAnswer"
             :disabled="task.display?.disabled"
             :placeholder="task.display?.placeholder || 'Please select'"
-            @change="task.changeInit && task.changeInit(taskFormCon)"
+            @change="task.changeInit && task.changeInit(taskFormCon, formfieldsObj2)"
           >
             <el-option
-              v-for="(label, value) in task.enumOptions"
+              v-for="(key, value) in task.enumOptions"
               :key="value"
-              :label="label"
-              :value="isNaN(+value) ? value : +value"
+              :label="(key as LabelListType).label || (key as string)"
+              :value="task.display?.valueType === 'number' ? +((key as LabelListType).value || (value as string)) : ((key as LabelListType).value || (value as string))"
             />
           </el-select>
           <el-upload
@@ -136,15 +136,16 @@
       </template>
     </el-form>
     <!-- <div class="pd-tp-10 text-right">
-      <el-button type="primary" @click="checkSubmit()">Submit</el-button>
+      <el-button  class="btn btn-primary" @click="checkSubmit()">Submit</el-button>
     </div> -->
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { FileType, ObjectType, TaskFormFieldsDataType } from '@/common/types'
+  import { FileType, ObjectType, TaskFormFieldsDataType, LabelListType } from '@/common/types'
   import { isArray, isString } from '@/common/is'
   import { FormInstance, UploadFile, UploadFiles, UploadRawFile, UploadUserFile } from 'element-plus'
+  import { klona } from 'klona'
 
   const props = withDefaults(
     defineProps<{
@@ -162,22 +163,20 @@
   const emits = defineEmits(['submitForm'])
 
   const taskForm = ref<FormInstance>()
-  const taskFormCon = ref<ObjectType<any>>({})
-  const taskFormRules = ref<ObjectType<ObjectType<any>[]>>({})
+  // const allFormfieldsObj = ref<ObjectType<TaskFormFieldsDataType>>({}) // 所有的form格式，有重复, 未来用于传入changeInit
+  const formfieldsObj = ref<ObjectType<TaskFormFieldsDataType>>({}) // 平铺的form数据
+  const formfieldsObj2 = ref<ObjectType<TaskFormFieldsDataType>>({}) // 处理后的form数据
+  const taskFormCon = ref<ObjectType<any>>({}) // 提交的数据
+  const taskFormRules = ref<ObjectType<ObjectType<any>[]>>({}) // 提交的规则
 
-  const visibleInit = () => {
-    taskFormCon.value = {}
-    taskFormRules.value = {}
-  }
-
-  const formfieldsHtml = computed(() => {
-    const formfields = {} as ObjectType<TaskFormFieldsDataType>
-    props.taskFormfields.forEach((field) => {
+  const formfieldsObj2Init = () => {
+    formfieldsObj2.value = {}
+    Object.values(formfieldsObj.value).forEach((field) => {
       if (field.display?.tab) {
-        if (formfields[field.display?.tab]) {
-          formfields[field.display.tab].list!.push(field)
+        if (formfieldsObj2.value[field.display?.tab]) {
+          formfieldsObj2.value[field.display.tab].list!.push(field)
         } else {
-          formfields[field.display.tab] = {
+          formfieldsObj2.value[field.display.tab] = {
             id: field.display.tab,
             label: field.display.tab,
             type: 'tab',
@@ -188,18 +187,23 @@
           }
         }
       } else {
-        formfields[field.id] = field
+        formfieldsObj2.value[field.id] = field
       }
     })
-    return Object.values(formfields).sort(
+  }
+  const formfieldsHtml = computed(() => {
+    return Object.values(formfieldsObj2.value).sort(
       (a: TaskFormFieldsDataType, b: TaskFormFieldsDataType) => a.display?.order || 0 - (b.display?.order || 0)
     )
   })
+
   const taskFormInit = () => {
-    visibleInit()
+    taskFormCon.value = {}
+    taskFormRules.value = {}
     // console.log('this.formfields', this.formfields)
-    props.taskFormfields.forEach((field) => {
-      let val = field.defaultValue || props.taskFormParams[field.id]
+    Object.values(formfieldsObj.value).forEach((field) => {
+      let val =
+        field.defaultValue === '' || field.defaultValue === undefined ? props.taskFormParams[field.id] : field.defaultValue
       if (val) {
         if (field.display?.multiAnswer || field.type === 'upload') {
           if (isString(val)) {
@@ -257,17 +261,19 @@
 
   watch(
     () => props.taskFormfields,
-    () => {
+    (n) => {
+      // visibleInit()
+      formfieldsObj.value = ArrayToObj(n, 'id', true)
+      formfieldsObj2Init()
       taskFormInit()
     },
     { immediate: true, deep: true }
   )
 
   const taskSubmit = () => {
-    const { cloned } = useCloned(taskFormCon, { manual: true })
-    const params = cloned.value
+    const params = klona(taskFormCon.value)
     const variables = {} as ObjectType<any>
-    props.taskFormfields.forEach((field) => {
+    Object.values(formfieldsObj.value).forEach((field) => {
       if (field.constraints?.readonly) return
       // if (!params[field.id]) return
       let value = params[field.id]

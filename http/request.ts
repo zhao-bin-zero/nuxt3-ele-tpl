@@ -52,6 +52,39 @@ const handleError = <T>(response: FetchResponse<ResponseDataType<T>> & FetchResp
     handleMap[response.status] ? handleMap[response.status]() : err()
   }
 }
+
+// loading
+const loadingInstance = {
+  target: null as any,
+  count: 0
+}
+
+/**
+ * 打开Loading层实例
+ * @param request
+ */
+const openLoading = () => {
+  // request: any
+  // if (request?.headers?.request_loading) {
+  loadingInstance.count++
+  if (loadingInstance.count === 1) {
+    loadingInstance.target = ElLoading.service({ lock: true, text: 'Loading', background: 'rgba(0, 0, 0, 0.7)' })
+  }
+  // }
+}
+/**
+ * 关闭Loading层实例
+ * @param request
+ */
+const closeLoading = () => {
+  // request: any
+  if (loadingInstance.count > 0) loadingInstance.count--
+  if (loadingInstance.count === 0) {
+    loadingInstance.target!.close()
+    loadingInstance.target = null
+  }
+}
+
 /**
  * 生成每个请求唯一的键
  * @param request
@@ -61,6 +94,23 @@ const handleError = <T>(response: FetchResponse<ResponseDataType<T>> & FetchResp
 //   return [url, method, JSON.stringify(params), JSON.stringify(body)].join('&')
 // }
 const fetch = <T>(url: UrlType, options: UseFetchOptions<ResponseDataType<T>>) => {
+  // const {
+  //   public: { BASE_URL }
+  // } = useRuntimeConfig()
+  // const baseUrl = {
+  //   '/vdx': BASE_URL
+  // }
+  // let isReplace = false
+  // for (let i = 0; i < Object.keys(baseUrl).length; i++) {
+  //   const key = Object.keys(baseUrl)[i] as keyof typeof baseUrl
+  //   if ((url as string).startsWith(key)) {
+  //     url = (url as string).replace(key, baseUrl[key])
+  //     isReplace = true
+  //   }
+  // }
+  // if (!isReplace) {
+  //   url = BASE_URL + url
+  // }
   return useFetch(url, {
     // 请求拦截器
     onRequest({ options }) {
@@ -77,12 +127,16 @@ const fetch = <T>(url: UrlType, options: UseFetchOptions<ResponseDataType<T>>) =
         options.headers.set('VDX-TOKEN', token)
         // options.headers.set('Authorization', `Bearer ${token.value}`)
       }
+      // Accept-Language
+
+      openLoading()
     },
     // 响应拦截
     onResponse({ response }) {
       // if (response.headers.get('content-disposition') && response.status === 200) return response
       // TODO bug auth中间件初始化调用接口时onResponse获取不到useRoute
       console.log('onResponse')
+      closeLoading()
       if (response.status === 200 && response._data.code === 9200) {
         // 成功返回
         return response._data
@@ -94,6 +148,7 @@ const fetch = <T>(url: UrlType, options: UseFetchOptions<ResponseDataType<T>>) =
     // 错误处理
     onResponseError({ response }) {
       console.log('onResponseError')
+      closeLoading()
 
       handleError<T>(response)
       return Promise.reject(response?._data ?? null)
@@ -121,5 +176,11 @@ export const useHttp = {
 
   delete: <T>(url: UrlType, body?: ParamsType, options?: HttpOptions<T>) => {
     return fetch<T>(url, { method: 'delete', body, ...options })
+  }
+}
+
+export const endTimeAdd1D = (params: any, endTimeKey = 'endTime') => {
+  if (params[endTimeKey]) {
+    params[endTimeKey] += 1 * 24 * 60 * 60 * 1000
   }
 }

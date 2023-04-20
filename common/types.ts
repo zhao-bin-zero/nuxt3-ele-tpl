@@ -1,5 +1,12 @@
 import { UploadFile } from 'element-plus'
 
+export interface ObjectType<T> {
+  [key: string]: T
+}
+export interface LabelListType {
+  label: string
+  value: number
+}
 // 本地分页使用
 export interface IPagesResult<T> {
   pageNum: number
@@ -31,6 +38,7 @@ export interface TaskFormFieldsDataType {
   display?: {
     align?: string
     disabled?: boolean // 代表只读且后端解析
+    valueType?: 'string' | 'number' // 枚举value类型
     hided?: boolean
     multiAnswer?: boolean
     order?: number
@@ -43,9 +51,7 @@ export interface TaskFormFieldsDataType {
     tab?: string
     frontTab?: string
   }
-  enumOptions?: {
-    [key: string]: string
-  }
+  enumOptions?: ObjectType<string> | LabelListType[]
   file?: {
     fileAction: string
     fileType: string
@@ -53,15 +59,17 @@ export interface TaskFormFieldsDataType {
     fileLimit?: number
   }
   // 前端设置
-  changeInit?: (params?: ObjectType<any>) => void // 切换时执行初始化方法
+  changeInit?: (params?: ObjectType<any>, formfieldsObj?: ObjectType<TaskFormFieldsDataType>) => void // 切换时执行初始化方法
   textValue?: (params?: ObjectType<any>) => string
   list?: TaskFormFieldsDataType[]
 }
 
-export interface ObjectType<T> {
-  [key: string]: T
-}
-
 export interface FileType extends UploadFile {
   id: string
+}
+
+export interface MenuType {
+  label: string
+  name: string
+  disabled?: boolean
 }

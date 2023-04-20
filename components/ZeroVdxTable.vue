@@ -17,7 +17,14 @@
       </slot>
     </div>
     <div class="zero-table__content">
-      <el-table ref="tableRef" v-loading="loading" :height="tableHeight" :class="[tableClass]" :data="tableResult.data">
+      <el-table
+        ref="tableRef"
+        v-loading="loading"
+        :height="tableHeight"
+        :class="[tableClass]"
+        :data="tableResult.data"
+        @selection-change="selectionChange"
+      >
         <slot></slot>
         <template #empty>
           <el-empty />
@@ -27,7 +34,7 @@
     <div class="zero-table__foot">
       <slot name="footer"></slot>
     </div>
-    <div class="zero-pagination justify-flex-end">
+    <div class="zero-pagination justify-flex-end mg-bt-10 mg-tp-10">
       <el-button
         plain
         icon="ArrowLeft"
@@ -63,12 +70,15 @@
       showTableHeader: true
     }
   )
-  const emits = defineEmits(['getList'])
+  const emits = defineEmits(['getList', 'selectionChange'])
 
   const tableRef = ref<TableInstance>()
   const tableParentRef = ref()
   const { isFullscreen, toggle: toggleFullScreen } = useFullscreen(tableParentRef)
 
+  const selectionChange = (val: []) => {
+    emits('selectionChange', val)
+  }
   // const doLayout = () => {
   //   nextTick(() => {
   //     console.log('dolayout')
@@ -78,7 +88,22 @@
 </script>
 <style lang="scss" scoped>
   .zero-table {
+    overflow: hidden;
     .zero-table__head {
+      margin-bottom: 10px;
+    }
+    &:fullscreen {
+      display: flex;
+      flex-direction: column;
+      background-color: #fff;
+      padding: 30px 20px;
+      .zero-table__head {
+        margin-bottom: 20px;
+      }
+      .zero-table__content {
+        overflow: scroll;
+        // flex: 1 1 0%;
+      }
     }
   }
   .zero-pagination {

@@ -191,3 +191,34 @@ $dimensions: (
     object-fit: cover;
   }
 }
+
+// 点标记
+.point-marker {
+  position: relative;
+  padding-left: 14px;
+  &::before {
+    content: '';
+    position: absolute;
+    left: 3px;
+    top: 50%;
+    margin-top: -3px;
+    width: 6px;
+    height: 6px;
+    border-radius: 10px;
+  }
+  &.bg-success::before {
+    background: var(--success-color);
+  }
+  &.bg-error::before {
+    background: var(--error-color);
+  }
+  &.bg-info::before {
+    background: var(--info-color);
+  }
+  &.bg-warning::before {
+    background: var(--warning-color);
+  }
+  &.bg-disabled::before {
+    background: var(--disabled-color);
+  }
+}

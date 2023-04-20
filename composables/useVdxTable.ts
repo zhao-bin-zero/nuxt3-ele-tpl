@@ -72,7 +72,7 @@ export const useVdxTable = () => {
   }
 
   return {
-    tableLoading,
+    tableLoading: false, // 与http的loading冲突，暂未有好方法
     tableResult,
     tableSearchSubmit,
     tableFormRef
