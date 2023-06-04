@@ -2,10 +2,11 @@
   <!-- destroy-on-close 控制是否在关闭 Drawer 之后将子元素全部销毁-->
   <el-drawer
     v-model="visible"
-    custom-class="zero__drawer"
+    class="zero__drawer"
     direction="rtl"
     :destroy-on-close="true"
     :lock-scroll="true"
+    :size="size"
     @close="closeDrawerFunc"
   >
     <template #header>
@@ -25,11 +26,11 @@
       size?: string
     }>(),
     {
-      size: '900px'
+      size: '900'
     }
   )
 
-  const emits = defineEmits(['closeDrawerFunc'])
+  const emits = defineEmits(['closeDrawerFunc', 'update:modelValue'])
   // 弹框是否隐藏
   const visible = useVModel(props, 'modelValue')
 

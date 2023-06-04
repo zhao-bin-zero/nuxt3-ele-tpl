@@ -4,6 +4,10 @@ export function is(val: unknown, type: string) {
   return toString.call(val) === `[object ${type}]`
 }
 
+export function isBlob<T = unknown>(val?: T): val is T {
+  return is(val, 'Blob')
+}
+
 export function isUnDef<T = unknown>(val?: T): val is T {
   return is(val, 'Undefined')
 }

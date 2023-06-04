@@ -16,7 +16,7 @@
     <slot></slot>
     <template #footer>
       <slot name="footer">
-        <div class="justify-flex-end">
+        <div class="justify-flex-end" v-if="showBtn">
           <el-button @click="visible = false">Back</el-button>
           <el-button type="primary" @click="emits('submitForm')">Submit</el-button>
         </div>
@@ -33,11 +33,13 @@
       width?: string
       closeOnClickModal?: boolean
       showClose?: boolean
+      showBtn?: boolean
     }>(),
     {
       width: '500px',
       closeOnClickModal: true,
-      showClose: true
+      showClose: true,
+      showBtn: true
     }
   )
   const emits = defineEmits(['submitForm', 'update:modelValue'])

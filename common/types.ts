@@ -39,8 +39,12 @@ export interface TaskFormFieldsDataType {
     align?: string
     disabled?: boolean // 代表只读且后端解析
     valueType?: 'string' | 'number' // 枚举value类型
+    enumLabel?: (params?: any) => string
+    enumGroupLabel?: (label: string | number) => string
+    enumValue?: (params?: any) => string | number
     hided?: boolean
     multiAnswer?: boolean
+    submitType?: 'string' | 'array'
     order?: number
     reminder?: string
     textArea?: boolean
@@ -51,15 +55,20 @@ export interface TaskFormFieldsDataType {
     tab?: string
     frontTab?: string
   }
-  enumOptions?: ObjectType<string> | LabelListType[]
+  enumOptions?: any
+  enumGroupOptions?: any
   file?: {
-    fileAction: string
+    path?: string
     fileType: string
     contentType?: string
     fileLimit?: number
   }
   // 前端设置
-  changeInit?: (params?: ObjectType<any>, formfieldsObj?: ObjectType<TaskFormFieldsDataType>) => void // 切换时执行初始化方法
+  changeInit?: (
+    params?: ObjectType<any>,
+    formfieldsObj?: ObjectType<TaskFormFieldsDataType>,
+    rules?: ObjectType<ObjectType<any>[]>
+  ) => void // 切换时执行初始化方法
   textValue?: (params?: ObjectType<any>) => string
   list?: TaskFormFieldsDataType[]
 }

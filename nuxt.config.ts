@@ -1,4 +1,4 @@
-import i18n from './common/i18n'
+import i18n from './i18n'
 
 const isProduction = process.env.MODE === 'prod'
 
@@ -50,11 +50,7 @@ export default defineNuxtConfig({
       cookieKey: 'lang'
       // cookieDomain: '',
     },
-    vueI18n: {
-      legacy: false,
-      locale: i18n.defaultLocaleCode,
-      fallbackLocale: i18n.defaultLocaleCode
-    }
+    vueI18n: '/i18n/config'
   },
   // alias: {
   // '@': '.'

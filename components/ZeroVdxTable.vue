@@ -85,6 +85,7 @@
   //     tableRef.value?.doLayout()
   //   })
   // }
+  defineExpose({ tableRef })
 </script>
 <style lang="scss" scoped>
   .zero-table {

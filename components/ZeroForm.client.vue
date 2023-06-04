@@ -24,21 +24,40 @@
             {{ taskFormCon[task.id] || (task.textValue ? task.textValue(taskFormCon) : '--') }}
           </p>
           <el-select
-            v-if="task.type === 'enum' && task.enumOptions"
+            v-if="task.type === 'enum' && (task.enumOptions || task.enumGroupOptions)"
             v-model="taskFormCon[task.id]"
             clearable
             filterable
             :multiple="task.display?.multiAnswer"
             :disabled="task.display?.disabled"
             :placeholder="task.display?.placeholder || 'Please select'"
-            @change="task.changeInit && task.changeInit(taskFormCon, formfieldsObj2)"
+            @change="task.changeInit && task.changeInit(taskFormCon, formfieldsObj2, taskFormRules)"
           >
-            <el-option
-              v-for="(key, value) in task.enumOptions"
-              :key="value"
-              :label="(key as LabelListType).label || (key as string)"
-              :value="task.display?.valueType === 'number' ? +((key as LabelListType).value || (value as string)) : ((key as LabelListType).value || (value as string))"
-            />
+            <template v-if="task.enumGroupOptions">
+              <el-option-group
+                v-for="(group, label) in task.enumGroupOptions"
+                :key="label"
+                :label="(task.display?.enumGroupLabel && task.display?.enumGroupLabel(label)) || group.label"
+              >
+                <el-option
+                  v-for="(item, index) in group?.options || group"
+                  :key="index"
+                  :label="(task.display?.enumLabel && task.display?.enumLabel(item)) || item.label"
+                  :value="(task.display?.enumValue && task.display?.enumValue(item)) || item.value"
+                />
+              </el-option-group>
+            </template>
+            <template v-if="task.enumOptions">
+              <el-option
+                v-for="(key, value) in task.enumOptions"
+                :key="value"
+                :label="(task.display?.enumLabel && task.display?.enumLabel(key)) || key.label || key"
+                :value="
+                  (task.display?.enumValue && task.display?.enumValue(key)) ||
+                  (task.display?.valueType === 'number' ? +(key.value || value) : key.value || value)
+                "
+              />
+            </template>
           </el-select>
           <el-upload
             v-if="task.type === 'upload'"
@@ -47,7 +66,7 @@
             :with-credentials="false"
             :headers="taskFormUploadHeaders"
             :file-list="taskFormCon[task.id]"
-            :action="`${useRuntimeConfig().baseURL}/workflow/file`"
+            :action="`${useRuntimeConfig().public.BASE_URL}${task?.file?.path || '/workflow/file'}`"
             :before-remove="beforeRemove"
             :on-remove="
               (file, fileList) => {
@@ -82,7 +101,7 @@
             :disabled="task.display?.disabled"
             :limit="task?.file?.fileLimit"
           >
-            <el-button v-if="!task.display?.disabled" type="primary">Choose</el-button>
+            <el-button v-if="!task.display?.disabled" class="btn btn-primary">Choose</el-button>
             <!-- <div slot="tip" class="el-upload__tip">只能上传{{ task.file.type }}文件</div> -->
           </el-upload>
           <template v-if="task.type === 'string'">
@@ -97,6 +116,7 @@
               :disabled="task.display?.disabled"
               :placeholder="task.display?.placeholder || 'Please input'"
               :show-word-limit="task.display?.textArea"
+              @change="task.changeInit && task.changeInit(taskFormCon, formfieldsObj2, taskFormRules)"
             />
           </template>
           <!-- value-format除了x外无法设置默认值 -->
@@ -142,10 +162,11 @@
 </template>
 
 <script lang="ts" setup>
-  import { FileType, ObjectType, TaskFormFieldsDataType, LabelListType } from '@/common/types'
+  import { FileType, ObjectType, TaskFormFieldsDataType } from '@/common/types'
   import { isArray, isString } from '@/common/is'
   import { FormInstance, UploadFile, UploadFiles, UploadRawFile, UploadUserFile } from 'element-plus'
   import { klona } from 'klona'
+  import { useUserStore } from '~/stores/user'
 
   const props = withDefaults(
     defineProps<{
@@ -281,7 +302,10 @@
         value = value.map((obj: FileType) => obj.id)
       }
       if (field.display?.multiAnswer || field.type === 'upload') {
-        value = value.join()
+        // value = value.join()
+        if (field.display?.submitType === 'string') {
+          value = value.join()
+        }
       }
       if (field.display?.frontTab) {
         if (!variables[field.display?.frontTab]) {
@@ -305,9 +329,9 @@
   // 文件超出个数限制时的钩子
   const handleExceed = (files: File[], fileList: UploadUserFile[], task: TaskFormFieldsDataType) => {
     ElMessage.warning(
-      `当前限制选择 ${task.file?.fileLimit} 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
+      `${task.file?.fileLimit} files maximum，${files.length} files is selected at this time，${
         files.length + fileList.length
-      } 个文件`
+      } files have been selected in total.`
     )
   }
 
@@ -327,7 +351,7 @@
 
   // 删除文件之前的钩子，参数为上传的文件和文件列表，若返回 false 或者返回 Promise 且被 reject，则停止删除。
   const beforeRemove = async (file: UploadFile) => {
-    return ElMessageBox.confirm(`确定移除 ${file.name}？`).then(
+    return ElMessageBox.confirm(`Be sure to remove the ${file.name}？`).then(
       () => true,
       () => false
     )
@@ -369,9 +393,10 @@
 
   const taskFormUploadHeaders = computed(() => {
     // 不能监听，token刷新后会报错
-    const token = useLocalStorage('vpx.ops._token.keycloak', '')
+    // const token = useLocalStorage('vpx.ops._token.keycloak', '')
+    const { token } = useUserStore()
     return {
-      Authorization: token.value
+      Authorization: token
     }
   })
   defineExpose({ checkSubmit })

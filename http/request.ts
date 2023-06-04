@@ -3,6 +3,7 @@ import type { Ref } from 'vue'
 import type { UseFetchOptions } from '#app'
 import { useUserStore } from '@/stores/user'
 import { ObjectType } from '@/common/types'
+import { isBlob, isEmpty } from '@/common/is'
 
 // 后端返回的数据类型
 export interface ResponseDataType<T> {
@@ -16,7 +17,7 @@ type ParamsType = ObjectType<any>
 
 export type HttpOptions<T> = UseFetchOptions<ResponseDataType<T>>
 
-const handleError = <T>(response: FetchResponse<ResponseDataType<T>> & FetchResponse<ResponseType>) => {
+const handleError = <T>(response?: FetchResponse<ResponseDataType<T>> & FetchResponse<ResponseType>) => {
   const err = (text?: string) => {
     // 全局报错
     process.client &&
@@ -25,12 +26,12 @@ const handleError = <T>(response: FetchResponse<ResponseDataType<T>> & FetchResp
       })
   }
 
-  const { logout } = useUserStore()
-
-  if (!response._data) {
+  if (!response?._data) {
     err('请求超时，服务器无响应！')
     return
   }
+
+  const { logout } = useUserStore()
   if (response.status === 200) {
     err()
     // 判断登陆
@@ -137,7 +138,7 @@ const fetch = <T>(url: UrlType, options: UseFetchOptions<ResponseDataType<T>>) =
       // TODO bug auth中间件初始化调用接口时onResponse获取不到useRoute
       console.log('onResponse')
       closeLoading()
-      if (response.status === 200 && response._data.code === 9200) {
+      if ((response.status === 200 && response._data.code === 9200) || isBlob(response._data)) {
         // 成功返回
         return response._data
       } else {
@@ -153,6 +154,14 @@ const fetch = <T>(url: UrlType, options: UseFetchOptions<ResponseDataType<T>>) =
       handleError<T>(response)
       return Promise.reject(response?._data ?? null)
     },
+    onRequestError({ error }) {
+      console.log('onRequestError', error)
+      closeLoading()
+
+      handleError<T>()
+      return Promise.reject(error ?? null)
+    },
+    signal: AbortSignal.timeout(10 * 1000),
     // key: getPendingKey(url, options), // 相同的key不重复请求，可能需要设置时间
     // 合并参数
     ...options
@@ -163,7 +172,16 @@ const fetch = <T>(url: UrlType, options: UseFetchOptions<ResponseDataType<T>>) =
 // 自动导出
 export const useHttp = {
   get: <T>(url: UrlType, params?: ParamsType, options?: HttpOptions<T>) => {
-    return fetch<T>(url, { method: 'get', params, ...options })
+    let data = undefined as unknown as ParamsType
+    if (params) {
+      data = {}
+      Object.keys(params).forEach((key) => {
+        if (!isEmpty(params[key])) {
+          data[key] = params[key]
+        }
+      })
+    }
+    return fetch<T>(url, { method: 'get', params: data, ...options })
   },
 
   post: <T>(url: UrlType, body?: ParamsType, options?: HttpOptions<T>) => {

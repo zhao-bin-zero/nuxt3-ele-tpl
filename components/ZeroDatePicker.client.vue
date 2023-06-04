@@ -4,8 +4,8 @@
     v-model="times"
     :type="type"
     unlink-panels
-    start-placeholder="Start Time"
-    end-placeholder="End Time"
+    start-placeholder="Start Date"
+    end-placeholder="End Date"
     :value-format="isValueFormat ? valueFormat : ''"
     :format="format"
     @change="changeTime"

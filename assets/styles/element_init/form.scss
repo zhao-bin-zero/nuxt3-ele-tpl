@@ -11,6 +11,21 @@
     margin: 20px 0;
   }
   .task-form__upload {
+    width: 100%;
+    .el-upload {
+    }
+    .el-upload-list {
+      .el-upload-list__item {
+        .el-upload-list__item-name {
+          &:hover {
+            color: inherit;
+            text-decoration: auto;
+          }
+          .el-upload-list__item-file-name {
+          }
+        }
+      }
+    }
   }
   .task-form__error {
     margin: 10px 50px 0;
