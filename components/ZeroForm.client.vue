@@ -31,7 +31,7 @@
             :multiple="task.display?.multiAnswer"
             :disabled="task.display?.disabled"
             :placeholder="task.display?.placeholder || 'Please select'"
-            @change="task.changeInit && task.changeInit(taskFormCon, formfieldsObj2, taskFormRules)"
+            @change="valueChange(task)"
           >
             <template v-if="task.enumGroupOptions">
               <el-option-group
@@ -116,7 +116,7 @@
               :disabled="task.display?.disabled"
               :placeholder="task.display?.placeholder || 'Please input'"
               :show-word-limit="task.display?.textArea"
-              @change="task.changeInit && task.changeInit(taskFormCon, formfieldsObj2, taskFormRules)"
+              @change="valueChange(task)"
             />
           </template>
           <!-- value-format除了x外无法设置默认值 -->
@@ -163,7 +163,7 @@
 
 <script lang="ts" setup>
   import { FileType, ObjectType, TaskFormFieldsDataType } from '@/common/types'
-  import { isArray, isString } from '@/common/is'
+  import { isString } from '@/common/is'
   import { FormInstance, UploadFile, UploadFiles, UploadRawFile, UploadUserFile } from 'element-plus'
   import { klona } from 'klona'
   import { useUserStore } from '~/stores/user'
@@ -186,13 +186,14 @@
   const taskForm = ref<FormInstance>()
   // const allFormfieldsObj = ref<ObjectType<TaskFormFieldsDataType>>({}) // 所有的form格式，有重复, 未来用于传入changeInit
   const formfieldsObj = ref<ObjectType<TaskFormFieldsDataType>>({}) // 平铺的form数据
+  const formfieldsObjValues = computed(() => Object.values(formfieldsObj.value))
   const formfieldsObj2 = ref<ObjectType<TaskFormFieldsDataType>>({}) // 处理后的form数据
   const taskFormCon = ref<ObjectType<any>>({}) // 提交的数据
   const taskFormRules = ref<ObjectType<ObjectType<any>[]>>({}) // 提交的规则
 
   const formfieldsObj2Init = () => {
     formfieldsObj2.value = {}
-    Object.values(formfieldsObj.value).forEach((field) => {
+    formfieldsObjValues.value.forEach((field) => {
       if (field.display?.tab) {
         if (formfieldsObj2.value[field.display?.tab]) {
           formfieldsObj2.value[field.display.tab].list!.push(field)
@@ -218,15 +219,18 @@
     )
   })
 
-  const taskFormInit = () => {
+  const fieldValueIsArray = (field: TaskFormFieldsDataType) => {
+    return field.display?.multiAnswer || field.type === 'upload'
+  }
+
+  const taskFormConInit = () => {
     taskFormCon.value = {}
-    taskFormRules.value = {}
     // console.log('this.formfields', this.formfields)
-    Object.values(formfieldsObj.value).forEach((field) => {
+    formfieldsObjValues.value.forEach((field) => {
       let val =
         field.defaultValue === '' || field.defaultValue === undefined ? props.taskFormParams[field.id] : field.defaultValue
       if (val) {
-        if (field.display?.multiAnswer || field.type === 'upload') {
+        if (fieldValueIsArray(field)) {
           if (isString(val)) {
             val = val.split(',')
             if (field.type === 'upload') {
@@ -235,7 +239,7 @@
           }
         }
       } else {
-        if (field.display?.multiAnswer || field.type === 'upload') {
+        if (fieldValueIsArray(field)) {
           val = []
         } else if (field.type === 'boolean') {
           val = false
@@ -243,42 +247,55 @@
       }
       // console.log('val', val)
       taskFormCon.value[field.id] = val
-      taskFormRules.value[field.id] = []
-      // 必填校验
-      if (field.constraints?.required) {
-        taskFormRules.value[field.id].push({
-          required: true,
-          message: `${field.label} is required.`,
-          trigger: 'change'
-        })
-      }
-      // 长度校验
-      const maxLength = field.constraints?.maxlength || field.file?.fileLimit
-      if (maxLength || field.constraints?.minlength) {
-        taskFormRules.value[field.id].push({
-          type: isArray(val) ? 'array' : 'string',
-          min: field.constraints?.minlength,
-          max: maxLength,
-          message: `The length is between ${field.constraints?.minlength || 1} and ${maxLength || 'n'} ${
-            isArray(val) ? '' : 'characters'
-          }.`,
-          trigger: 'change'
-        })
-      }
-      // 正则校验
-      if (field.display?.regex) {
-        taskFormRules.value[field.id].push({
-          pattern: field.display.regex,
-          message: field.display.errorTip,
-          trigger: 'change'
-        })
-      }
     })
-    nextTick(() => {
-      taskForm.value?.clearValidate()
-    })
-    // console.log(this.taskFormCon, taskFormRules.value)
   }
+
+  // 正则生成
+  watch(
+    formfieldsObjValues,
+    (n) => {
+      taskFormRules.value = {}
+      n.forEach((field) => {
+        taskFormRules.value[field.id] = []
+        // 必填校验
+        if (field.constraints?.required) {
+          taskFormRules.value[field.id].push({
+            required: true,
+            message: `${field.label} is required.`,
+            trigger: 'change'
+          })
+        }
+        // 长度校验
+        const maxLength = field.constraints?.maxlength || field.file?.fileLimit
+        if (maxLength || field.constraints?.minlength) {
+          taskFormRules.value[field.id].push({
+            type: fieldValueIsArray(field) ? 'array' : 'string',
+            min: field.constraints?.minlength,
+            max: maxLength,
+            message: `The length is between ${field.constraints?.minlength || 1} and ${maxLength || 'n'} ${
+              fieldValueIsArray(field) ? '' : 'characters'
+            }.`,
+            trigger: 'change'
+          })
+        }
+        // 正则校验
+        if (field.display?.regex) {
+          taskFormRules.value[field.id].push({
+            pattern: field.display.regex,
+            message: field.display.errorTip,
+            trigger: 'change'
+          })
+        }
+      })
+
+      // nextTick(() => {
+      //   setTimeout(() => {
+      //     taskForm.value?.clearValidate()
+      //   })
+      // })
+    },
+    { deep: true }
+  )
 
   watch(
     () => props.taskFormfields,
@@ -286,22 +303,26 @@
       // visibleInit()
       formfieldsObj.value = ArrayToObj(n, 'id', true)
       formfieldsObj2Init()
-      taskFormInit()
+      taskFormConInit()
     },
     { immediate: true, deep: true }
   )
 
+  const valueChange = (field: TaskFormFieldsDataType) => {
+    field.changeInit && field.changeInit(taskFormCon.value, formfieldsObj2.value)
+  }
+
   const taskSubmit = () => {
     const params = klona(taskFormCon.value)
     const variables = {} as ObjectType<any>
-    Object.values(formfieldsObj.value).forEach((field) => {
+    formfieldsObjValues.value.forEach((field) => {
       if (field.constraints?.readonly) return
       // if (!params[field.id]) return
       let value = params[field.id]
       if (field.type === 'upload') {
         value = value.map((obj: FileType) => obj.id)
       }
-      if (field.display?.multiAnswer || field.type === 'upload') {
+      if (fieldValueIsArray(field)) {
         // value = value.join()
         if (field.display?.submitType === 'string') {
           value = value.join()

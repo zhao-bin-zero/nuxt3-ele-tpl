@@ -64,12 +64,8 @@ export interface TaskFormFieldsDataType {
     fileLimit?: number
   }
   // 前端设置
-  changeInit?: (
-    params?: ObjectType<any>,
-    formfieldsObj?: ObjectType<TaskFormFieldsDataType>,
-    rules?: ObjectType<ObjectType<any>[]>
-  ) => void // 切换时执行初始化方法
-  textValue?: (params?: ObjectType<any>) => string
+  changeInit?: (taskFormCon?: ObjectType<any>, formfieldsObj?: ObjectType<TaskFormFieldsDataType>) => void // 切换时执行初始化方法
+  textValue?: (params?: ObjectType<any>) => string | number
   list?: TaskFormFieldsDataType[]
 }
 
