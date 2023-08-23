@@ -110,8 +110,6 @@
               v-model="taskFormCon[task.id]"
               :type="task.display?.textArea ? 'textarea' : 'text'"
               :rows="2"
-              :max="task.constraints?.max"
-              :min="task.constraints?.min"
               :maxlength="task.constraints?.maxlength"
               :disabled="task.display?.disabled"
               :placeholder="task.display?.placeholder || 'Please input'"
@@ -119,6 +117,16 @@
               @change="valueChange(task)"
             />
           </template>
+          <el-input-number
+            v-if="task.type === 'number'"
+            v-model="taskFormCon[task.id]"
+            :step="task.constraints?.step"
+            :max="task.constraints?.max"
+            :min="task.constraints?.min"
+            :disabled="task.display?.disabled"
+            :placeholder="task.display?.placeholder || 'Please input'"
+            @change="valueChange(task)"
+          />
           <!-- value-format除了x外无法设置默认值 -->
           <el-date-picker
             v-if="task.type === 'timestamp'"
@@ -129,7 +137,7 @@
             :placeholder="task.display?.placeholder || 'Please select date'"
           />
           <el-switch v-if="task.type === 'boolean'" v-model="taskFormCon[task.id]" :disabled="task.display?.disabled" />
-          <!-- 目前只有输入框 -->
+          <!-- 目前只有文本输入框 -->
           <template v-if="task.type === 'tab' && task.list">
             <el-tabs v-model="task.defaultValue" class="bms-tabs" type="card">
               <el-tab-pane v-for="t in task.list" :key="t.id" :label="t.label" :name="t.id">
@@ -262,6 +270,16 @@
           taskFormRules.value[field.id].push({
             required: true,
             message: `${field.label} is required.`,
+            trigger: 'change'
+          })
+        }
+        // 大小校验
+        if (field.constraints?.min || field.constraints?.max) {
+          taskFormRules.value[field.id].push({
+            type: 'number',
+            min: field.constraints?.min,
+            max: field.constraints?.max,
+            message: `Greater than ${field.constraints?.min || 0} is less than ${field.constraints?.max || 'n'}.`,
             trigger: 'change'
           })
         }
